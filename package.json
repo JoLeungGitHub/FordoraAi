@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/JoLeungGitHub/FordoraAi/issues"
   },
-  "homepage": "https://github.com/JoLeungGitHub/FordoraAi#readme"
+  "homepage": "https://github.com/JoLeungGitHub/FordoraAi#readme",
+  "dependencies": {
+    "@slack/bolt": "^1.2.0"
+  }
 }
