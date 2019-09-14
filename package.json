@@ -1,0 +1,20 @@
+{
+  "name": "fordora_ai",
+  "version": "1.0.0",
+  "description": "End-to-end food automation.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "JoLeungGitHub",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoLeungGitHub/FordoraAi.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JoLeungGitHub/FordoraAi/issues"
+  },
+  "homepage": "https://github.com/JoLeungGitHub/FordoraAi#readme"
+}
