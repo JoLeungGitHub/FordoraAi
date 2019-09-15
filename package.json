@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/JoLeungGitHub/FordoraAi#readme",
   "dependencies": {
-    "@slack/bolt": "^1.2.0"
+    "@slack/bolt": "^1.2.0",
+    "underscore": "^1.9.1"
   }
 }
