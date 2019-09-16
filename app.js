@@ -3,7 +3,7 @@ const fs = require('fs');
 const _ = require('underscore');
 
 
-// Initializes your app with your bot token and signing secret
+// Initializes Fordora Ai with your bot token and signing secret
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET
@@ -14,6 +14,7 @@ const app = new App({
 let timeLeft = 0;
 let sentOptions = [];
 let running = false;
+let cancelVote = false;
 
 
 // https://stackoverflow.com/a/34270811
@@ -34,13 +35,143 @@ const humanTime = (seconds) => {
   return returntext;
 };
 
+// https://stackoverflow.com/a/39914235
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+app.message('!help', ({ message, say }) => {
+  say({
+    blocks: [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": `Here is a list of things *Fordora Ai* responds to <@${message.user}>:`,
+        }
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "*!startvote*: start a vote.",
+        }
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "_*Args passed as [arg_name]=[arg_value], order does not matter.*_"
+          }
+        ]
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "*name*: name of the list of options. _[Default: default]_"
+          }
+        ]
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "*time*: amount of time before the end of the vote (in seconds). _[Default: 1200 (20 minutes)]_"
+          }
+        ]
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "*options*: options to vote on, passed as a list (comma separated). If name arg is also passed, options added to that list. _[Default: []]_"
+          }
+        ]
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "*!stopvote*: stop ongoing vote.",
+        }
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "*!timeleft*: return how much time is left.",
+        }
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "*!settime [amount in seconds]*: set the timer to the given amount.",
+        }
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "*!addtime [amount in seconds]*: add the given amount to the timer.",
+        }
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "*!removetime [amount in seconds]*: remove the given amount from the timer.",
+        }
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "*!help*: ...",
+        }
+      },
+      {
+        "type": "divider"
+      },
+    ]
+  });
+});
+
 
 app.message('!addtime', ({ message, say }) => {
   let amount = message.text.match(/!addtime \d+/g);
   if (amount) {
     amount = parseInt(amount[0].substring(9),10);
     timeLeft += amount;
-    say(`Added ${amount} to the timer, ${humanTime(timeLeft)} left.`)
+    console.log(`>>> added ${amount} to timer`);
+    say(`Added ${humanTime(amount)} to the timer, ${humanTime(timeLeft)} left.`)
   } else {
     say('Usage: !addtime [amount in seconds]');
   }
@@ -51,7 +182,8 @@ app.message('!removetime', ({ message, say }) => {
   if (amount) {
     amount = parseInt(amount[0].substring(12),10);
     timeLeft = (timeLeft - amount <= 0) ? 0 : timeLeft - amount;
-    say(`Removed ${amount} from the timer, ${humanTime(timeLeft)} left.`)
+    console.log(`>>> removed ${amount} from timer`);
+    say(`Removed ${humanTime(amount)} from the timer, ${humanTime(timeLeft)} left.`)
   } else {
     say('Usage: !removetime [amount in seconds]');
   }
@@ -62,7 +194,8 @@ app.message('!settime', ({ message, say }) => {
   if (amount) {
     amount = parseInt(amount[0].substring(9),10);
     timeLeft = amount;
-    say(`Set timer to ${amount}, ${humanTime(timeLeft)} left.`)
+    console.log('>>> set timer to', amount);
+    say(`Set timer to ${humanTime(amount)}.`)
   } else {
     say('Usage: !settime [amount in seconds]');
   }
@@ -73,10 +206,31 @@ app.message('!timeleft', ({ say }) => {
 });
 
 
-const postOptions = (message, say, context, getList = './lists/foodora50off.json') => {
-  // print foodlist
-  const foodList = JSON.parse(fs.readFileSync(getList, 'utf8'));
-  foodList.forEach(async (option) => {
+const postOptions = (message, say, context, listName, options) => {
+  if (listName === null && options === null) { listName = 'default'; }
+  if (options === null) { options = []; }
+
+  let optionsList = [];
+  try {
+    listName = JSON.parse(fs.readFileSync(`./lists/${listName}.json`, 'utf8'));
+  }
+  catch (error) {
+    if (options.length < 1) {
+      say('Could not find list.');
+      cancelVote = true;
+      return;
+    }
+  }
+
+  if (Array.isArray(listName)) {
+    optionsList = listName;
+  }
+  if (options.length > 0) {
+    options.forEach(o => optionsList.push({ name: o, emoji: 'alien' }))
+  }
+
+  console.log('optionsList:', optionsList);
+  optionsList.forEach(async (option) => {
     try {
       const sent = await app.client.chat.postMessage({
         "token": context.botToken,
@@ -99,24 +253,56 @@ const postOptions = (message, say, context, getList = './lists/foodora50off.json
   });
 };
 
-// Listens to incoming messages that contain "hello"
-app.message('!votefood', ({ message, say, context }) => {
+
+app.message('!stopvote', ({ say }) => running ? cancelVote = true : say('No ongoing vote'));
+
+app.message('!startvote', ({ message, say, context }) => {
   if (running) {
     say('There is already an ongoing vote');
     return;
   }
   // init
-  channel = message.channel;
   sentOptions = [];
   const amountOfTime = message.text.match(/time=\d+/g);
   if (amountOfTime) { timeLeft = parseInt(amountOfTime[0].substring(5),10); }
-  timeLeft = (timeLeft > 0) ? timeLeft : 20;
+  timeLeft = (timeLeft > 0) ? timeLeft : 1200;  // default to 20 minutes
   running = true;
 
-  // say(`Hey there <@${message.user}>! Here is the food list:`);
-  say(`Time to vote for food <!everyone>! Here is the list of options:`);
+  say({
+    blocks: [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Time to vote for food <!everyone>! Here is the list of options:",
+        }
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "*Tip*: If you think an option is missing, post it and the 'AI' will make sure it's in the list next week."
+          }
+        ]
+      },
+      {
+        "type": "divider"
+      },
+    ]
+  });
 
-  postOptions(message, say, context);
+  let listName = message.text.match(/name=[^\s]+/g);
+  if (listName) { listName = listName[0].substring(5); }
+
+  let options = message.text.match(/options=\[.+\]/g);
+  if (options) {
+    options = options[0].substring(8);
+    options = options.replace(/\[|\]|\s|'|"/g, '').split(',');
+  }
+
+  // bad fix for 'say' delay
+  sleep(2000).then(() => postOptions(message, say, context, listName, options));
 
   // timer
   async function countDown() {
@@ -139,7 +325,7 @@ app.message('!votefood', ({ message, say, context }) => {
             "elements": [
               {
                 "type": "mrkdwn",
-                "text": "*Disclaimer:* Fordora Ai is not responsible for the ordering of ties."
+                "text": "*Disclaimer*: Fordora Ai is not responsible for the ordering of ties."
               }
             ]
           },
@@ -161,7 +347,7 @@ app.message('!votefood', ({ message, say, context }) => {
         }
       }
       finalScore = _.sortBy(finalScore, 'count').reverse();
-      console.log(finalScore);
+      console.log('final score:', finalScore);
       const blocks = finalScore.map((option, i) => ({
         "type": "section",
         "text": {
@@ -174,6 +360,16 @@ app.message('!votefood', ({ message, say, context }) => {
       );
       say({ blocks });
       running = false;
+      console.log('>>> done');
+      return;
+    }
+    if (cancelVote) {
+      running = false;
+      timeLeft = 0;
+      sentOptions = [];
+      cancelVote = false;
+      console.log('>>> vote cancelled');
+      say('Vote cancelled');
       return;
     }
     timeLeft -= 1;
@@ -181,13 +377,17 @@ app.message('!votefood', ({ message, say, context }) => {
     setTimeout(countDown, 1000)
   }
 
-  say(`Voting will end in ${timeLeft} seconds.`);
-  countDown();
+  // bad fix for 'say' delay
+  sleep(5000).then(() => {
+    say(`Voting will end in ${humanTime(timeLeft)}.`);
+    console.log('>>> start timer');
+    countDown();
+  });
 });
 
 (async () => {
-  // Start your app
+  // Start Fordora Ai
   await app.start(process.env.PORT || 3000);
 
-  console.log('⚡️ Bolt app is running!');
+  console.log(`⚡️ Fordora Ai is running! (${process.env.PORT || 3000})`);
 })();
