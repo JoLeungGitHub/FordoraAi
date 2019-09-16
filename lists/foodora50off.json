@@ -1,18 +1,85 @@
 [
   {
     "name": "Assembli",
-    "emoji": "+1"
+    "emoji": "moneybag"
   },
   {
     "name": "Mad Radish",
     "emoji": "angry"
   },
   {
-    "name": "Other Option",
-    "emoji": "drooling_face"
+    "name": "Big Smoke Burger",
+    "emoji": "hamburger"
   },
   {
-    "name": "Last Option",
-    "emoji": "tired_face"
+    "name": "Church’s Chicken",
+    "emoji": "exclamation"
+  },
+  {
+    "name": "Thai Room Cabba..."
+  },
+  {
+    "name": "Urban Thai",
+    "emoji": "smile"
+  },
+  {
+    "name": "Tacorrito",
+    "emoji": "face_vomiting"
+  },
+  {
+    "name": "Hurry Curry",
+    "emoji": "+1"
+  },
+  {
+    "name": "Basil Box",
+    "emoji": "ok_hand"
+  },
+  {
+    "name": "ChiChop Taiwanese…",
+    "emoji": "fire"
+  },
+  {
+    "name": "Salad King",
+    "emoji": "bomb"
+  },
+  {
+    "name": "Impact Kitchen",
+    "emoji": "heart_eyes"
+  },
+  {
+    "name": "Flock",
+    "emoji": "heart_eyes"
+  },
+  {
+    "name": "Fancy Franks",
+    "emoji": "+1"
+  },
+  {
+    "name": "Kibo Sushi",
+    "emoji": "100"
+  },
+  {
+    "name": "Paintbox",
+    "emoji": "chart_with_upwards_trend"
+  },
+  {
+    "name": "Kinton Ramen",
+    "emoji": "fuelpump"
+  },
+  {
+    "name": "Roti’s To Go",
+    "emoji": "biohazard_sign"
+  },
+  {
+    "name": "Hangry Burger",
+    "emoji": "hankey"
+  },
+  {
+    "name": "Hero Certified Burger",
+    "emoji": "hand"
+  },
+  {
+    "name": "Halal Guys",
+    "emoji": "fire"
   }
 ]

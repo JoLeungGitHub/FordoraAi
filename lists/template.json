@@ -1,0 +1,33 @@
+[
+  {
+    "name": "option_1",
+    "emoji": "heart"
+  },
+  {
+    "name": "option_2",
+    "emoji": "blue_heart"
+  },
+  {
+    "name": "option_3",
+    "emoji": "green_heart"
+  },
+  {
+    "name": "option_4",
+    "emoji": "black_heart"
+  },
+  {
+    "name": "option_5",
+    "emoji": "yellow_heart"
+  },
+  {
+    "name": "option_6",
+    "emoji": "purple_heart"
+  },
+  {
+    "name": "option_7",
+    "emoji": "orange_heart"
+  },
+  {
+    "name": "option_8"
+  }
+]
