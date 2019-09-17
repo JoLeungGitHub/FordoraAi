@@ -313,32 +313,45 @@ app.message('!startvote', ({ message, say, context }) => {
   // init
   sentOptions = [];
   initiator = message.text.match(/pr073c73d/g) ? message.user : '';
-  const amountOfTime = message.text.match(/time=\d+/g);
-  if (amountOfTime) { timeLeft = parseInt(amountOfTime[0].substring(5),10); }
-  timeLeft = (timeLeft > 0) ? timeLeft : 1200;  // default to 20 minutes
+  let amountOfTime = message.text.match(/time=\d+/g);
+  if (amountOfTime) {
+    amountOfTime = parseInt(amountOfTime[0].substring(5),10);
+    timeLeft = (amountOfTime > MAX) ? MAX : amountOfTime;
+  } else {
+    timeLeft = 1200;  // default to 20 minutes
+  }
   running = true;
 
-  const startBlocks = [
-    {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "Time to vote for food <!everyone>! Here is the list of options:",
-      }
-    },
-    {
-      "type": "context",
-      "elements": [
-        {
+  const startBlocks = message.text.match(/no-ping/g) ?
+    [
+      {
+        "type": "section",
+        "text": {
           "type": "mrkdwn",
-          "text": "*Tip*: If you think an option is missing, post it and the 'AI' will make sure it's in the list next week."
+          "text": "Time to vote! Here is the list of options:",
         }
-      ]
-    },
-    {
-      "type": "divider"
-    },
-  ];
+      },
+    ]
+    :
+    [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Time to vote for food <!everyone>! Here is the list of options:",
+        }
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "*Tip*: If you think an option is missing, post it and the _AI_ will make sure it's in the list next week."
+          }
+        ]
+      },
+    ];
+  startBlocks.push({ "type": "divider" });
   if (initiator !== '') {
     startBlocks.splice(1, 0, {
       "type": "context",
@@ -415,9 +428,7 @@ app.message('!startvote', ({ message, say, context }) => {
           "text": `${i + 1}. *${option.name}*: ${option.count}`
         },
       }));
-      blocks.push(
-        { "type": "divider" }
-      );
+      blocks.push({ "type": "divider" });
       say({ blocks });
       running = false;
       console.log('>>> done');

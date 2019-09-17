@@ -45,5 +45,9 @@ options: options to vote on, passed as a list (comma separated). If name arg is 
 
 
 <details><summary></summary>
-secret !startvote arg: pr073c73d, makes it so only the person who started the vote can use commands, except for !timeleft.
+secret !startvote args: 
+
+pr073c73d; makes it so only the person who started the vote can use commands, except for !timeleft (and !help).
+
+no-ping; Fordora Ai does not ping @everyone at the start of the vote.
 </details>
