@@ -3,7 +3,7 @@ const fs = require('fs');
 const _ = require('underscore');
 
 
-// Initializes Fordora Ai with your bot token and signing secret
+// Initialize Fordora Ai with bot token and signing secret
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET
@@ -79,7 +79,7 @@ app.message('!help', ({ message, say }) =>
         "elements": [
           {
             "type": "mrkdwn",
-            "text": "*name*: name of the list of options. _[Default: default]_"
+            "text": "*name*: name of the list. _[Default: default]_"
           }
         ]
       },
@@ -447,6 +447,5 @@ app.message('!startvote', ({ message, say, context }) => {
 (async () => {
   // Start Fordora Ai
   await app.start(process.env.PORT || 7890);
-
   console.log(`⚡️ Fordora Ai is running! (${process.env.PORT || 7890})`);
 })();
