@@ -45,7 +45,7 @@ options: options to vote on, passed as a list (comma separated). If name arg is 
 
 
 <details><summary></summary>
-secret !startvote args: 
+Additional !startvote args: 
 
 pr073c73d; makes it so only the person who started the vote can use commands, except for !timeleft (and !help).
 

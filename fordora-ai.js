@@ -3,7 +3,7 @@ const fs = require('fs');
 const _ = require('underscore');
 
 
-// Initialize Fordora Ai with bot token and signing secret
+// initialize Fordora Ai with bot token and signing secret
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET
@@ -192,7 +192,6 @@ app.message('!addtime', ({ message, say }) => {
   if (amount) {
     amount = parseInt(amount[0].substring(9),10);
     timeLeft = (timeLeft + amount > MAX) ? MAX : timeLeft + amount;
-    console.log(`>>> added ${amount} to timer`);
     say(`Added ${humanTime(amount)} to the timer, ${humanTime(timeLeft)} left.`)
   } else {
     say('Usage: !addtime [amount in seconds]');
@@ -212,7 +211,6 @@ app.message('!removetime', ({ message, say }) => {
   if (amount) {
     amount = parseInt(amount[0].substring(12),10);
     timeLeft = (timeLeft - amount < 0) ? 0 : timeLeft - amount;
-    console.log(`>>> removed ${amount} from timer`);
     say(`Removed ${humanTime(amount)} from the timer, ${humanTime(timeLeft)} left.`)
   } else {
     say('Usage: !removetime [amount in seconds]');
@@ -232,7 +230,6 @@ app.message('!settime', ({ message, say }) => {
   if (amount) {
     amount = parseInt(amount[0].substring(9),10);
     timeLeft = (amount > MAX) ? MAX : amount;
-    console.log('>>> set timer to', amount);
     say(`Set timer to ${humanTime(amount)}.`)
   } else {
     say('Usage: !settime [amount in seconds]');
@@ -246,18 +243,17 @@ const postOptions = (message, say, context, listName, options) => {
   if (listName === null && options === null) { listName = 'default'; }
   if (options === null) { options = []; }
 
-  let optionsList = [];
   try {
     listName = JSON.parse(fs.readFileSync(`./lists/${listName}.json`, 'utf8'));
-  }
-  catch (error) {
+  } catch (error) {
     if (options.length < 1) {
-      say('Could not find list.');
+      say('Could not find list. (or list does not conform to standard .json format)');
       cancelVote = true;
       return;
     }
   }
 
+  let optionsList = [];
   if (Array.isArray(listName)) {
     optionsList = listName;
   }
@@ -265,7 +261,6 @@ const postOptions = (message, say, context, listName, options) => {
     options.forEach(o => optionsList.push({ name: o, emoji: 'alien' }))
   }
 
-  console.log('optionsList:', optionsList);
   optionsList.forEach(async (option) => {
     try {
       const sent = await app.client.chat.postMessage({
@@ -273,18 +268,15 @@ const postOptions = (message, say, context, listName, options) => {
         "channel": message.channel,
         "text": option.name,
       });
-
       sentOptions.push({name: option.name, emoji: option.emoji || '+1', ts: sent.ts});
-
       app.client.reactions.add({
         token: context.botToken,
         channel: sent.channel,
         timestamp: sent.ts,
         name: option.emoji || '+1',
       });
-    }
-    catch (error) {
-      console.error(error);
+    } catch (error) {
+      console.log(error);
     }
   });
 };
@@ -310,8 +302,7 @@ app.message('!startvote', ({ message, say, context }) => {
     say('There is already an ongoing vote');
     return;
   }
-  // init
-  sentOptions = [];
+
   initiator = message.text.match(/pr073c73d/g) ? message.user : '';
   let amountOfTime = message.text.match(/time=\d+/g);
   if (amountOfTime) {
@@ -320,6 +311,7 @@ app.message('!startvote', ({ message, say, context }) => {
   } else {
     timeLeft = 1200;  // default to 20 minutes
   }
+  sentOptions = [];
   running = true;
 
   const startBlocks = message.text.match(/no-ping/g) ?
@@ -374,12 +366,16 @@ app.message('!startvote', ({ message, say, context }) => {
     options = options.replace(/\[|]|[^\S ]/g, '').split(',');
   }
 
-  // bad fix for 'say' delay
   sleep(2000).then(() => postOptions(message, say, context, listName, options));
 
-  // timer
   async function countDown() {
-    // Voting period finished
+    if (cancelVote) {
+      running = false;
+      timeLeft = 0;
+      cancelVote = false;
+      say('Vote cancelled');
+      return;
+    }
     if (timeLeft <= 0) {
       say({
         blocks: [
@@ -414,13 +410,12 @@ app.message('!startvote', ({ message, say, context }) => {
           });
           const count = _.find(optionReacts.message.reactions, d => d.name === sent.emoji).count - 1;
           finalScore.push({ name: sent.name, count: count })
-        }
-        catch (error) {
-          console.error(error);
+        } catch (error) {
+          console.log(error);
         }
       }
+
       finalScore = _.sortBy(finalScore, 'count').reverse();
-      console.log('final score:', finalScore);
       const blocks = finalScore.map((option, i) => ({
         "type": "section",
         "text": {
@@ -431,32 +426,22 @@ app.message('!startvote', ({ message, say, context }) => {
       blocks.push({ "type": "divider" });
       say({ blocks });
       running = false;
-      console.log('>>> done');
       return;
     }
-    if (cancelVote) {
-      running = false;
-      timeLeft = 0;
-      cancelVote = false;
-      console.log('>>> vote cancelled');
-      say('Vote cancelled');
-      return;
-    }
+
     timeLeft -= 1;
-    console.log('timeLeft:', timeLeft);
     setTimeout(countDown, 1000)
   }
 
-  // bad fix for 'say' delay
   sleep(5000).then(() => {
     say(`Voting will end in ${humanTime(timeLeft)}.`);
-    console.log('>>> start timer');
     countDown();
   });
 });
 
+
+// start Fordora Ai
 (async () => {
-  // Start Fordora Ai
   await app.start(process.env.PORT || 7890);
-  console.log(`⚡️ Fordora Ai is running! (${process.env.PORT || 7890})`);
+  console.log(`Fordora Ai is running on port: ${process.env.PORT || 7890}`);
 })();
