@@ -1,54 +1,66 @@
 [
   {
-    "name": "Kinton Ramen",
-    "emoji": "ramen"
-  },
-  {
-    "name": "Salad King",
-    "emoji": "green_salad"
-  },
-  {
-    "name": "flock",
-    "emoji": "chicken"
-  },
-  {
     "name": "Chipotle",
     "emoji": "stuffed_flatbread"
   },
   {
-    "name": "burrito boyz",
+    "name": "Burrito Boyz",
     "emoji": "burrito"
   },
   {
-    "name": "sukhothai",
+    "name": "B.GOOD",
+    "emoji": "green_salad"
+  },
+  {
+    "name": "Freshii",
     "emoji": "broccoli"
   },
   {
-    "name": "mean bao",
+    "name": "PG Clucks",
+    "emoji": "poultry_leg"
+  },
+  {
+    "name": "Globally Local",
+    "emoji": "hamburger"
+  },
+  {
+    "name": "Naan and Kabob",
+    "emoji": "curry"
+  },
+  {
+    "name": "Osmow's",
+    "emoji": "meat_on_bone"
+  },
+  {
+    "name": "Bread & Bowl",
     "emoji": "bread"
   },
   {
-    "name": "bahn mi boys",
-    "emoji": "baguette_bread"
+    "name": "Magic Noodle",
+    "emoji": "ramen"
   },
   {
-    "name": "tender trap",
-    "emoji": "biohazard_sign"
+    "name": "My Roti Place",
+    "emoji": "shallow_pan_of_food"
   },
   {
-    "name": "gushi",
-    "emoji": "japan"
+    "name": "Tokyo Hot Fried Chicken",
+    "emoji": "bento"
   },
   {
-    "name": "saigon pai",
-    "emoji": "eggplant"
+    "name": "Basil Box",
+    "emoji": "package"
   },
   {
-    "name": "Rolltation",
+    "name": "Hakka Palace",
+    "emoji": "rice"
+  },
+  {
+    "name": "Hoki Poki",
+    "emoji": "fish"
+  },
+  {
+    "name": "Kibo Sushi",
     "emoji": "sushi"
-  },
-  {
-    "name": "Halal Guys",
-    "emoji": "fire"
   }
 ]

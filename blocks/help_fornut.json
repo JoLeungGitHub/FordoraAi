@@ -1,0 +1,68 @@
+[
+  {
+    "type": "image",
+    "image_url": "https://i.imgur.com/xcWrTot.png",
+    "alt_text": "fornut"
+  },
+  {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "Here is a list of things *fornut* responds to:"
+    }
+  },
+  {
+    "type": "context",
+    "elements": [
+      {
+        "type": "mrkdwn",
+        "text": "Train or descry the _Feural Fetwork™_: github.com/forma-ai/FordoraAi"
+      },
+      {
+        "type": "mrkdwn",
+        "text": "*Disclaimer*: fornut is not responsible for randomness. (Fisher-Yates shuffle algorithm)"
+      }
+    ]
+  },
+  {
+    "type": "divider"
+  },
+  {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "*!fornut*: randomly group all users of the sent-from channel."
+    }
+  },
+  {
+    "type": "context",
+    "elements": [
+      {
+        "type": "mrkdwn",
+        "text": "*size*: size of the groups. _[Default: 2]_"
+      }
+    ]
+  },
+  {
+    "type": "divider"
+  },
+  {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "*!pick*: randomly pick a user from the sent-from channel."
+    }
+  },
+  {
+    "type": "context",
+    "elements": [
+      {
+        "type": "mrkdwn",
+        "text": "Optionally pass a list to pick from instead. e.g.: !pick [a,b,c]"
+      }
+    ]
+  },
+  {
+    "type": "divider"
+  }
+]

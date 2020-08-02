@@ -1,0 +1,150 @@
+[
+  {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "Here is a list of things *Fordora Ai* responds to:"
+    }
+  },
+  {
+    "type": "context",
+    "elements": [
+      {
+        "type": "mrkdwn",
+        "text": "Train or descry the _Feural Fetwork™_: github.com/forma-ai/FordoraAi"
+      }
+    ]
+  },
+  {
+    "type": "divider"
+  },
+  {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "*!startvote*: start a vote."
+    }
+  },
+  {
+    "type": "context",
+    "elements": [
+      {
+        "type": "mrkdwn",
+        "text": "_*Args passed as [arg_name]=[arg_value], order does not matter.*_"
+      },
+      {
+        "type": "mrkdwn",
+        "text": "*type*: type of voting system. _[Default: approval]_ (see README for list of options)"
+      },
+      {
+        "type": "mrkdwn",
+        "text": "*name*: name of the list. _[Default: default]_"
+      },
+      {
+        "type": "mrkdwn",
+        "text": "*time*: amount of time before the end of the vote (in seconds). _[Default: 1200 (20 minutes)]_"
+      },
+      {
+        "type": "mrkdwn",
+        "text": "*options*: options to vote on, passed as a list (comma separated). If name arg is also passed, options added to that list. _[Default: []]_"
+      },
+      {
+        "type": "mrkdwn",
+        "text": "*amount*: amount of options listed at the end of the vote. _[Default: 10]_"
+      }
+    ]
+  },
+  {
+    "type": "divider"
+  },
+  {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "*!addoptions [options to add, passed as a list (comma separated)]*: add the given options to the voting list."
+    }
+  },
+  {
+    "type": "divider"
+  },
+  {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "*!removeoptions [options to remove, passed as a list (comma separated)]*: remove the given options from the voting list."
+    }
+  },
+  {
+    "type": "divider"
+  },
+  {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "*!stopvote*: stop ongoing vote. (equivalent to setting timer to 0)"
+    }
+  },
+  {
+    "type": "divider"
+  },
+  {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "*!cancelvote*: cancel ongoing vote."
+    }
+  },
+  {
+    "type": "divider"
+  },
+  {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "*!timeleft*: return how much time is left."
+    }
+  },
+  {
+    "type": "divider"
+  },
+  {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "*!settime [amount in seconds]*: set the timer to the given amount."
+    }
+  },
+  {
+    "type": "divider"
+  },
+  {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "*!addtime [amount in seconds]*: add the given amount to the timer."
+    }
+  },
+  {
+    "type": "divider"
+  },
+  {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "*!removetime [amount in seconds]*: remove the given amount from the timer."
+    }
+  },
+  {
+    "type": "divider"
+  },
+  {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "*!say [message]*: posts [message] to all channels in the list. _(admin only)_"
+    }
+  },
+  {
+    "type": "divider"
+  }
+]
